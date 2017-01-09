@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessments</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li class="active">Assessments</li>
+        </ol>
+        <div class="page-header">
+            <h1>
+                Assessments
+                <a type="button" href="/assessment/add" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+                <a type="button" href="/course/add" class="btn btn-default pull-right"><span class="glyphicon glyphicon-book"></span></a>
+            </h1>
+        </div>
+        {% for group in grouping %}
+            {% if type_of(group) == 'Assessment' %}
+                {% set assessment = group %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{ assessment.get_title() }}
+                        <span class="label label-{{ assessment.get_course().get_color() }}">{{ assessment.get_course().get_id() }}</span>
+                        <div class="btn-group btn-group-xs pull-right">
+                            <a type="button" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></a>
+                            <a type="button" class="btn btn-default"><span class="glyphicon glyphicon-education"></span></a>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>Due {{ assessment.get_due() }}</p>
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-{{ assessment.get_course().get_color() }}" style="min-width: 2em; width: {{ assessment.get_worth() }}%">
+                            {{ assessment.get_worth() }}%
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                {% set category = group %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{ category.get_title() }}
+                        <span class="label label-{{ category.get_course().get_color() }}">{{ category.get_course().get_id() }}</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="progress">
+                          <div class="progress-bar progress-bar-{{ category.get_course().get_color() }}" style="min-width: 2em; width: {{ category.get_worth() }}%">
+                            {{ category.get_worth() }}%
+                          </div>
+                        </div>
+                    </div>
+
+                    <ul class="list-group">
+                        {% for assessment in category.get_assessment() %}
+                            <li class="list-group-item">
+                                <h4 class="list-group-item-heading">
+                                    <span class="badge">{{ assessment.get_due() }}</span>
+                                    {{ assessment.get_title() }}
+                                    <div class="btn-group btn-group-xs pull-right">
+                                        <a type="button" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></a>
+                                        <a type="button" class="btn btn-default"><span class="glyphicon glyphicon-education"></span></a>
+                                    </div>
+                                </h4>
+                                <p class="list-group-item-text"></p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>

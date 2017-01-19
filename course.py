@@ -69,3 +69,18 @@ class Course(object):
         """Return the bootstrap color label based on the color of the course"""
         list = ['info', 'success', 'danger', 'warning']
         return list[self.color]
+
+    def set_title(self, title):
+        """Update the title attribute with the given value"""
+        with database() as db:
+            db.query('UPDATE courses SET title = %s WHERE course = %s', title, self.course)
+
+    def set_semester(self, semester):
+        """Update the semester attribute with the given value"""
+        with database() as db:
+            db.query('UPDATE courses SET semester = %s WHERE course = %s', semester, self.course)
+
+    def set_color(self, color):
+        """Update the color attribute with the given value"""
+        with database() as db:
+            db.query('UPDATE courses SET color = %s WHERE course = %s', color, self.course)

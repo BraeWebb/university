@@ -26,7 +26,7 @@ class Course(object):
         with database() as db:
             sql = 'INSERT INTO courses (course, title, semester, color) VALUES (%s, %s, %s, %s)'
             db.query(sql, course, title, semester, color)
-            return cls(course)
+        return cls(course)
 
     def delete(self):
         """Delete the course from the database"""
@@ -51,7 +51,7 @@ class Course(object):
         from assessment import Assessment
         with database() as db:
             sql = 'SELECT * FROM assessments WHERE course = %s'
-            return [Assessment(assessment) for assessment in db.query(sql, self.course)]
+            return [Assessment(assessment[0]) for assessment in db.query(sql, self.course)]
 
     def get_id(self):
         """Return the course code of the course instance"""

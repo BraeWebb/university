@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li class="active">Courses</li>
+        </ol>
+        <div class="page-header">
+            <h1>
+                Courses
+                <a type="button" href="/course/add" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+            </h1>
+        </div>
+        <ul class="list-group">
+        {% for semester in semesters %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ semester }}</div>
+            {% for course in Course.get_all(semester=semester) %}
+                <li class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        <span class="label label-{{ course.get_color() }}">{{ course.get_id() }}</span>
+                        {{ course.get_title() }}
+
+                        <div class="btn-group btn-group-xs pull-right">
+                            <a type="button" href="/course/{{ course.get_id() }}" class="btn btn-default course-link" data-course="{{ course.get_id() }}">
+                                <span class="glyphicon glyphicon-link"></span>
+                            </a>
+                        </div>
+                    </h4>
+                    <p class="list-group-item-text"></p>
+                </li>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

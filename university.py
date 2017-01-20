@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from assessment import Assessment, Category
 from course import Course
@@ -21,6 +21,26 @@ def view_courses():
 @app.route('/course/<course>')
 def view_course(course):
     return render_template('course.html', course=Course(course))
+
+@app.route('/api/course/delete', methods=['POST'])
+def api_delete_course():
+    id = request.form.get('id')
+    Course(id).delete()
+    return ''
+
+@app.route('/api/course/edit', methods=['POST'])
+def api_edit_course():
+    id = request.form.get('id')
+    title, semester, color = request.form.get('title'), request.form.get('semester'), request.form.get('color')
+    course = Course(id)
+    print(color)
+    if title:
+        course.set_title(title)
+    if semester:
+        course.set_semester(semester)
+    if color or color == 0:
+        course.set_color(color)
+    return ''
 
 @app.context_processor
 def custom_context_utils():

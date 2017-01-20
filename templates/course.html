@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.get_title() }}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li class="active">{{ course.get_title() }}</li>
+        </ol>
+        <div class="page-header">
+            <h1>
+                {{ course.get_title() }}
+                <a type="button" class="btn btn-default pull-right course-delete" data-course="{{ course.get_id() }}"><span class="glyphicon glyphicon-trash"></span></a>
+                <a type="button" class="btn btn-default pull-right course-edit" data-course="{{ course.get_id() }}"><span class="glyphicon glyphicon-pencil"></span></a>
+            </h1>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-{{ course.get_color() }}">Code: {{ course.get_id() }}</li>
+            <li class="list-group-item list-group-item-{{ course.get_color() }}">Title: {{ course.get_title() }}</li>
+            <li class="list-group-item list-group-item-{{ course.get_color() }}">Semester: {{ course.get_semester() }}</li>
+        </ul>
+        <div class="panel panel-default">
+            <div class="panel-heading">Assessments</div>
+            <ul class="list-group">
+            {% for assessment in course.get_assessments()|sort %}
+                <li class="list-group-item">
+                    {{ assessment.get_title() }}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="edit-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="form-group">
+                <input type="text" class="form-control" id="model-title-value" placeholder="{{ course.get_title() }}">
+                <select class="form-control" id="model-semester-value">
+                    {% for semester in ['2017S1', '2016S2', '2016S1'] %}
+                        <option value="{{ semester }}" {% if semester == course.get_semester() %}selected{% endif %}>{{ semester }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-control" id="model-color-value">
+                    {% for color in ['Blue', 'Green', 'Red', 'Yellow'] %}
+                        <option value="{{ loop.index - 1 }}" {% if loop.index - 1 == course.color %}selected{% endif %}>{{ color }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary course-edit-submit">Change</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        $('.course-delete').click(function(e){
+            id = "{{ course.get_id() }}";
+            $.ajax({
+                method: "POST",
+                url: "/api/course/delete",
+                data: { id: id }
+            }).done(function(data){
+                window.location.href = "/courses";
+            });
+        });
+        $('.course-edit').click(function(e){
+            $('#edit-modal').modal('show');
+        });
+        $('.course-edit-submit').click(function(e){
+            id = "{{ course.get_id() }}";
+            title = $("#model-title-value").val();
+            semester = $("#model-semester-value").val();
+            color = $("#model-color-value").val();
+            console.log(semester);
+            $.ajax({
+                method: "POST",
+                url: "/api/course/edit",
+                data: { id: id, title: title, semester: semester, color: color }
+            })
+        });
+    </script>
+</body>
+</html>

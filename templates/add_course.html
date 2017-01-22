@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Course</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li><a href="/courses">Courses</a></li>
+            <li class="active">Add</li>
+        </ol>
+        <div class="page-header">
+            <h1>Add Course</h1>
+        </div>
+        <form class="form-horizontal" action="/api/add/course" method="post">
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-barcode"></span>
+                    <input type="text" class="form-control" name="course" placeholder="Course Code">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-pencil"></span>
+                    <input type="text" class="form-control" name="title" placeholder="Title">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-calendar"></span>
+                    <select class="form-control" name="semester">
+                        {% for semester in ['2017S1', '2016S2', '2016S1'] %}
+                            <option value="{{ semester }}">{{ semester }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-group-lg">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-tint"></span>
+                    <select class="form-control" name="color">
+                        {% for color in ['Blue', 'Green', 'Red', 'Yellow'] %}
+                            <option value="{{ loop.index - 1 }}">{{ color }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Add</button>
+        </form>
+    </div>
+</body>
+</html>

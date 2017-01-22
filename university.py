@@ -34,6 +34,10 @@ def view_courses():
 def view_course(course):
     return render_template('course.html', course=Course(course))
 
+@app.route('/course/add')
+def add_course():
+    return render_template('add_course.html')
+
 @app.route('/api/course/delete', methods=['POST'])
 def api_delete_course():
     id = request.form.get('id')

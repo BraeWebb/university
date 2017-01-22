@@ -10,6 +10,10 @@ app = Flask(__name__)
 def view_assessments():
     return render_template('assessments.html', grouping=sorted(Category.get_all() + Assessment.get_nocategory()))
 
+@app.route('/assessment/<assessment_id>')
+def view_assessment(assessment_id):
+    return render_template('assessment.html', assessment=Assessment(assessment_id))
+
 @app.route('/results')
 def view_results():
     return 'A page containing many different statistics about assessment results'

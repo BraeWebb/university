@@ -14,6 +14,10 @@ def view_assessments():
 def view_assessment(assessment_id):
     return render_template('assessment.html', assessment=Assessment(assessment_id))
 
+@app.route('/assessment/add')
+def add_assessment():
+    return render_template('add_assessment.html', courses=Course.get_all(), categories=[{'category_id': '', 'title': ''}]  + Category.get_all())
+
 @app.route('/results')
 def view_results():
     return 'A page containing many different statistics about assessment results'

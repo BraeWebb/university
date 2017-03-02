@@ -12,7 +12,7 @@ class Assessment(object):
     @classmethod
     def create(cls, due, title, worth, course, category):
         with database() as db:
-            id = db.query('SELECT MAX(assessment_id) FROM assessments')[0][0] + 1
+            id = (db.query('SELECT MAX(assessment_id) FROM assessments')[0][0] or 0) + 1
             db.query('INSERT INTO assessments (assessment_id, title, worth, due, course, result, done, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
                      id, title, worth, due, course, 0, False, category if category else None)
             return cls(id)

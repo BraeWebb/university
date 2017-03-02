@@ -35,11 +35,37 @@ def add_course():
 def view_assessment(assessment_id):
     return render_template('assessment.html', assessment=Assessment(assessment_id))
 
-@app.route('/api/add/assessment', methods=['POST'])
+@app.route('/results')
+def view_results():
+    return 'A page containing many different statistics about assessment results'
+
+
+# Jinja2 context and filters
+
+@app.context_processor
+def custom_context_utils():
+    return dict(type_of=lambda item: type(item).__name__)
+
+@app.template_filter('date')
+def filter_date(date):
+    # Credit to Acorn: http://stackoverflow.com/questions/5891555/display-the-date-like-may-5th-using-pythons-strftime
+    suffix = 'th' if 11<=date.day<=13 else {1:'st',2:'nd',3:'rd'}.get(date.day%10, 'th')
+    return date.strftime('%d{} of %B %Y').format(suffix).lstrip("0")
+
+
+# API routes
+
+@app.route('/api/assessment', methods=['POST'])
 def api_add_assessment():
-    due, title, worth, course, category = request.form.get('due'), request.form.get('title'), request.form.get('worth'), request.form.get('course'), request.form.get('category')
-    assessment = Assessment.create(due, title, worth, course, category)
-    return redirect(url_for('view_assessment', assessment_id=assessment.get_id()))
+    attributes = [request.form.get('due'), request.form.get('title'), request.form.get('worth'), request.form.get('course')]
+    due, title, worth, course, category = *attributes, request.form.get('category')
+    if not all(bool(attr) for attr in attributes):
+        return jsonify(**{'status': 'error', 'error':'Invalid Request', 'error_msg':'Not all required attributes were given'})
+    try:
+        assessment = Assessment.create(due, title, worth, course, category)
+        return jsonify(**{'status':'success', 'assessment':{'id':assessment.get_id()}})
+    except Exception as e:
+        return jsonify(**{'status': 'error', 'error':type(e).__name__})
 
 @app.route('/api/add/category', methods=['POST'])
 def api_add_category():
@@ -104,20 +130,6 @@ def api_edit_course():
     if color or color == 0:
         course.set_color(color)
     return ''
-
-@app.route('/results')
-def view_results():
-    return 'A page containing many different statistics about assessment results'
-
-@app.context_processor
-def custom_context_utils():
-    return dict(type_of=lambda item: type(item).__name__)
-
-@app.template_filter('date')
-def filter_date(date):
-    # Credit to Acorn: http://stackoverflow.com/questions/5891555/display-the-date-like-may-5th-using-pythons-strftime
-    suffix = 'th' if 11<=date.day<=13 else {1:'st',2:'nd',3:'rd'}.get(date.day%10, 'th')
-    return date.strftime('%d{} of %B %Y').format(suffix).lstrip("0")
 
 
 if __name__ == '__main__':

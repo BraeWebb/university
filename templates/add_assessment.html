@@ -19,28 +19,28 @@
         <div class="page-header">
             <h1>Add Assessment</h1>
         </div>
-        <form class="form-horizontal" action="/api/add/assessment" method="post">
+        <form class="form-horizontal">
             <div class="form-group">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon glyphicon glyphicon-calendar"></span>
-                    <input type="text" class="form-control" name="due" placeholder="Due">
+                    <input type="text" class="form-control" id="assessment-due" placeholder="Due">
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon glyphicon glyphicon-pencil"></span>
-                    <input type="text" class="form-control" name="title" placeholder="Title">
+                    <input type="text" class="form-control" id="assessment-title" placeholder="Title">
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">%</span>
-                    <input type="text" class="form-control" name="worth" placeholder="Worth">
+                    <input type="text" class="form-control" id="assessment-worth" placeholder="Worth">
                 </div>
             </div>
             <div class="form-group form-group-lg">
                 <label>Course</label>
-                <select class="form-control" name="course">
+                <select class="form-control" id="assessment-course">
                     {% for course in courses %}
                         <option value="{{ course.get_id() }}">{{ course.get_id() }}</option>
                     {% endfor %}
@@ -48,14 +48,28 @@
             </div>
             <div class="form-group form-group-lg">
                 <label>Category (optional)</label>
-                <select class="form-control" name="category">
+                <select class="form-control" id="assessment-category">
                     {% for category in categories %}
                         <option value="{{ category.category_id }}">{{ category.title }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Add</button>
+            <button type="button" class="btn btn-lg btn-primary btn-block create-assessment">Create</button>
         </form>
     </div>
+    <script>
+        $('.create-assessment').click(function(e){
+            due = $('#assessment-due').val();
+            title = $('#assessment-title').val();
+            worth = $('#assessment-worth').val();
+            course = $('#assessment-course').val();
+            category = $('#assessment-category').val();
+            $.ajax({
+                method: "PUT",
+                url: "/api/assessment",
+                data: { due: due, title: title, worth: worth, course: course, category: category }
+            });
+        });
+    </script>
 </body>
 </html>
